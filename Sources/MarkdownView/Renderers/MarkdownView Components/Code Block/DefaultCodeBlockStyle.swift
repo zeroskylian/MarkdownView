@@ -61,9 +61,12 @@ struct DefaultMarkdownCodeBlock: View {
     
     @Environment(\.markdownRendererConfiguration.fontGroup) private var fontGroup
     
-    @State private var showCopyButton = false
     @State private var attributedCode: AttributedString?
     @State private var codeHighlightTask: Task<Void, Error>?
+    
+    #if os(macOS)
+    @State private var showCopyButton = false
+    #endif
     
     var body: some View {
         Group {
@@ -82,7 +85,7 @@ struct DefaultMarkdownCodeBlock: View {
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(.quaternary.opacity(0.5), in: RoundedRectangle(cornerRadius: 8))
-        #if os(macOS) || os(iOS)
+        #if os(macOS)
         .overlay(alignment: .topTrailing) {
             if showCopyButton {
                 CopyButton(content: codeBlockConfiguration.code)
@@ -91,6 +94,12 @@ struct DefaultMarkdownCodeBlock: View {
             }
         }
         .onHover { showCopyButton = $0 }
+        #elseif os(iOS)
+        .overlay(alignment: .topTrailing) {
+            CopyButton(content: codeBlockConfiguration.code)
+                .padding(8)
+                .transition(.opacity.animation(.easeInOut))
+        }
         #endif
         .overlay(alignment: .bottomTrailing) {
             codeLanguage
@@ -205,10 +214,11 @@ struct CopyButton: View {
     @State private var copied = false
     #if os(macOS)
     @ScaledMetric private var size = 12
+    
+    @State private var isHovering = false
     #else
     @ScaledMetric private var size = 18
     #endif
-    @State private var isHovering = false
     
     var body: some View {
         Button(action: copy) {
@@ -235,9 +245,11 @@ struct CopyButton: View {
             RoundedRectangle(cornerRadius: 5, style: .continuous)
                 .stroke(.quaternary, lineWidth: 1)
         }
-        .brightness(isHovering ? 0.3 : 0)
         .buttonStyle(.borderless) // Only use `.borderless` can behave correctly when text selection is enabled.
+#if os(macOS)
+        .brightness(isHovering ? 0.3 : 0)
         .onHover { isHovering = $0 }
+#endif
     }
     
     private func copy() {
