@@ -24,7 +24,7 @@ struct MarkdownTable: View {
     private var adaptiveGridTable: some View {
         AdaptiveGrid(showDivider: true) {
             GridRowContainer {
-                for cell in table.head.children where cell is Markdown.Table.Cell {
+                for cell in table.head.children {
                     GridCellContainer(alignment: (cell as! Markdown.Table.Cell).alignment) {
                         MarkdownViewRenderer(configuration: configuration)
                             .render(cell)
