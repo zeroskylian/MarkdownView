@@ -8,7 +8,6 @@
 import Foundation
 import SwiftUI
 
-@available(macOS 13.0, iOS 16.0, tvOS 16.0, watchOS 9.0, *)
 enum Tab: String, CaseIterable {
     case overview, image, table, text, list, customization, interact, blockDirective, math, stream
     
@@ -74,7 +73,6 @@ extension Tab {
 }
 
 // MARK: - Conformance: Identifiable
-@available(macOS 13.0, iOS 16.0, tvOS 16.0, watchOS 9.0, *)
 extension Tab: Identifiable {
     var id: String { name }
 }
