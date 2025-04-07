@@ -26,10 +26,8 @@ struct ImageDestination: View {
 }
 
 #Preview {
-    NavigationStack {
-        ScrollView {
-            ImageDestination()
-                .frame(width: 300)
-        }
+    ScrollView {
+        ImageDestination()
+            .frame(width: 300)
     }
 }

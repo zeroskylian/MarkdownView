@@ -8,6 +8,7 @@
 import SwiftUI
 import MarkdownView
 
+@available(macOS 13.0, iOS 16.0, tvOS 16.0, watchOS 9.0, *)
 struct ListDestination: View {
     @State private var text = """
     - Solar System Exploration
@@ -33,7 +34,7 @@ struct ListDestination: View {
                     .lineSpacing(6)
                     .padding(8)
                     .background(
-                        .background.secondary,
+                        .background,
                         in: .rect(cornerRadius: 12)
                     )
             } header: {
@@ -50,11 +51,5 @@ struct ListDestination: View {
                     .font(.headline)
             }
         }
-    }
-}
-
-#Preview {
-    ScrollView {
-        ListDestination()
     }
 }

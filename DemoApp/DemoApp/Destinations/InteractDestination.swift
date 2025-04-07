@@ -8,6 +8,7 @@
 import SwiftUI
 import MarkdownView
 
+@available(macOS 13.0, iOS 16.0, tvOS 16.0, watchOS 9.0, *)
 struct InteractDestination: View {
     @State private var text = ""
     @State private var enableMathRendering = false
@@ -19,10 +20,10 @@ struct InteractDestination: View {
                     .scrollContentBackground(.hidden)
                     .font(.body)
                     .lineSpacing(6)
-                    .containerRelativeFrame(.vertical, count: 3, span: 1, spacing: 20)
+//                    .containerRelativeFrame(.vertical, count: 3, span: 1, spacing: 20)
                     .padding(8)
                     .background(
-                        .background.secondary,
+                        .background,
                         in: .rect(cornerRadius: 12)
                     )
             } header: {
@@ -44,12 +45,5 @@ struct InteractDestination: View {
                     .font(.headline)
             }
         }
-    }
-}
-
-#Preview {
-    ScrollView {
-        InteractDestination()
-            .scenePadding()
     }
 }

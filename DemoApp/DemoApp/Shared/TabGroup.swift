@@ -7,6 +7,7 @@
 
 import Foundation
 
+@available(macOS 13.0, iOS 16.0, tvOS 16.0, watchOS 9.0, *)
 enum TabGroup: String, Codable, CaseIterable {
     case intro = "Intro"
     case interactive = "Try"
@@ -22,7 +23,7 @@ enum TabGroup: String, Codable, CaseIterable {
 }
 
 // MARK: - Conformance: Identifiable
-
+@available(macOS 13.0, iOS 16.0, tvOS 16.0, watchOS 9.0, *)
 extension TabGroup: Identifiable {
     var id: Self { self }
 }

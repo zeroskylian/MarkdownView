@@ -33,9 +33,7 @@ struct OverviewDestination: View {
 }
 
 #Preview {
-    NavigationStack {
-        ScrollView {
-            OverviewDestination()
-        }
+    ScrollView {
+        OverviewDestination()
     }
 }

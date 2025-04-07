@@ -8,6 +8,7 @@
 import SwiftUI
 import MarkdownView
 
+@available(macOS 13.0, iOS 16.0, tvOS 16.0, watchOS 9.0, *)
 struct BlockDirectiveDestination: View {
     @State private var text = #"""
     @note {
@@ -24,7 +25,7 @@ struct BlockDirectiveDestination: View {
                     .lineSpacing(6)
                     .padding(8)
                     .background(
-                        .background.secondary,
+                        .background,
                         in: .rect(cornerRadius: 12)
                     )
             } header: {
@@ -45,14 +46,6 @@ struct BlockDirectiveDestination: View {
     }
 }
 
-#Preview {
-    ScrollView {
-        BlockDirectiveDestination()
-            .scenePadding()
-            .frame(width: 500)
-    }
-}
-
 // MARK: - Custom Note Block Directive Provider
 
 struct NoteBlockDirective: BlockDirectiveDisplayable {
@@ -60,7 +53,7 @@ struct NoteBlockDirective: BlockDirectiveDisplayable {
         Text(text)
             .padding(20)
             .background(
-                .yellow.secondary,
+                .yellow,
                 in: .rect(cornerRadius: 12)
             )
     }

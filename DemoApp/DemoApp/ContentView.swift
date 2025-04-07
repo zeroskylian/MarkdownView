@@ -8,6 +8,7 @@
 import SwiftUI
 import MarkdownView
 
+@available(macOS 13.0, iOS 16.0, tvOS 16.0, watchOS 9.0, *)
 struct ContentView: View {
     @State private var selection: Tab? = .overview
     
@@ -32,8 +33,4 @@ struct ContentView: View {
         }
         .navigationSplitViewStyle(.balanced)
     }
-}
-
-#Preview {
-    ContentView()
 }
