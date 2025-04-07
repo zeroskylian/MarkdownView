@@ -12,7 +12,9 @@ import MarkdownView
 struct ContentView15: View {
     
     var body: some View {
-        MarkdownView(streamText)
+        ScrollView {
+            MarkdownView(streamText)
+        }
     }
     
     let streamText = #"""
