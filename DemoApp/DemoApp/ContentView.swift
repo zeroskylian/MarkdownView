@@ -10,7 +10,7 @@ import MarkdownView
 
 @available(macOS 13.0, iOS 16.0, tvOS 16.0, watchOS 9.0, *)
 struct ContentView: View {
-    @State private var selection: Tab? = .overview
+    @State private var selection: Tab?
     
     var body: some View {
         NavigationSplitView(columnVisibility: .constant(.doubleColumn)) {

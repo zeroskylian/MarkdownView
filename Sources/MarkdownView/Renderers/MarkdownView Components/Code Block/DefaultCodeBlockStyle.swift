@@ -85,14 +85,23 @@ struct DefaultMarkdownCodeBlock: View {
         .padding(16)
         #if os(macOS) || os(iOS)
         .safeAreaInset(edge: .top, spacing: 0) {
-            copyButton
-                .frame(maxWidth: .infinity, alignment: .trailing)
-                .background(.quaternary.opacity(0.3))
-                .overlay {
-                    Rectangle()
-                        .stroke(.quaternary, lineWidth: 0.5)
-                        .scaleEffect(x: 1.5, y: 1.5, anchor: .bottom)
-                }
+            HStack {
+                codeLanguage
+                Spacer()
+                copyButton
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+            }
+#if os(macOS)
+            .padding(8)
+#else
+            .padding(16)
+#endif
+            .background(.quaternary.opacity(0.3))
+            .overlay {
+                Rectangle()
+                    .stroke(.quaternary, lineWidth: 0.5)
+                    .scaleEffect(x: 1.5, y: 1.5, anchor: .bottom)
+            }
         }
         #endif
         .background(.background)
@@ -224,11 +233,6 @@ struct DefaultMarkdownCodeBlock: View {
         }
         .buttonStyle(.accessory)
         .font(.callout.weight(.medium))
-        #if os(macOS)
-        .padding(8)
-        #else
-        .padding(16)
-        #endif
     }
 }
 
