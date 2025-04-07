@@ -35,8 +35,8 @@ struct MarkdownTable: View {
             }
             for row in table.head.children {
                 GridRowContainer {
-                    for cell in row.children {
-                        GridCellContainer(alignment: (cell as? Markdown.Table.Cell)?.alignment ?? .center) {
+                    for cell in row.children where cell is Markdown.Table.Cell {
+                        GridCellContainer(alignment: (cell as! Markdown.Table.Cell).alignment) {
                             MarkdownViewRenderer(configuration: configuration)
                                 .render(cell)
                                 .font(configuration.fontGroup.tableBody)
