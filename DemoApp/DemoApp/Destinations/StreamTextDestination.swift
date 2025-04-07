@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 import MarkdownView
 
+/// https://markdown-it.github.io/
 struct StreamTextDestination: View {
     
     var body: some View {
