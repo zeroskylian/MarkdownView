@@ -10,7 +10,7 @@ import SwiftUI
 
 @available(macOS 13.0, iOS 16.0, tvOS 16.0, watchOS 9.0, *)
 enum Tab: String, CaseIterable {
-    case overview, image, table, text, list, customization, interact, blockDirective, math
+    case overview, image, table, text, list, customization, interact, blockDirective, math, stream
     
     var name: String {
         switch self {
@@ -23,6 +23,7 @@ enum Tab: String, CaseIterable {
         case .interact: "Interact"
         case .blockDirective: "Block Directive"
         case .math: "Math Rendering"
+        case .stream: "Stream Text"
         }
     }
 }
@@ -59,6 +60,7 @@ extension Tab {
                     case .interact: InteractDestination()
                     case .blockDirective: BlockDirectiveDestination()
                     case .math: MathDestination()
+                    case .stream: StreamTextDestination()
                     }
                 }
                 .frame(maxWidth: .infinity)
