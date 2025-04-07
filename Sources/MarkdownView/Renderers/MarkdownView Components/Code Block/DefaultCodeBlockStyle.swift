@@ -174,7 +174,13 @@ struct DefaultMarkdownCodeBlock: View {
         
         try Task.checkCancellation()
         let code = codeBlockConfiguration.code
-        guard let highlightedCode = highlightr.highlight(code, as: language) else { return }
+        guard let language, let highlightedCode = highlightr.highlight(code, as: language) else {
+            try await MainActor.run {
+                try Task.checkCancellation()
+                self.attributedCode = AttributedString(code)
+            }
+            return
+        }
         let attributedCode = NSMutableAttributedString(
             attributedString: highlightedCode
         )
