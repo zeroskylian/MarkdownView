@@ -9,5 +9,5 @@ import Foundation
 
 public enum MarkdownViewConstants {
     
-    static let onTapImageNotificationName = Notification.Name("MarkdownView.onTapImage")
+    public static let onTapImageNotificationName = Notification.Name("MarkdownView.onTapImage")
 }
