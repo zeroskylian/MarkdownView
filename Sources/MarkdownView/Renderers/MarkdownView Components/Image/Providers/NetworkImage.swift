@@ -62,6 +62,7 @@ struct NetworkImage: View {
     }
     
     private func reloadImage() {
+        NotificationCenter.default.post(name: MarkdownViewConstants.onTapImageNotificationName, object: url)
         guard !isSupported else { return }
         isSupported = true
         image = nil
