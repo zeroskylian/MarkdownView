@@ -12,13 +12,34 @@ import MarkdownView
 /// https://markdown-it.github.io/
 struct StreamTextDestination: View {
     
+    @State var streamText: String = ""
+    
     var body: some View {
         ScrollView {
             MarkdownView(streamText)
+        }.task {
+            buildStreamText()
         }
     }
     
-    let streamText = #"""
+    
+    func buildStreamText() {
+        Task {
+            var count = 0
+            let delta = 10
+            while count < text.count {
+                try? await Task.sleep(nanoseconds: 100_000_000)
+                if let char = text[safe: count ..< count + delta] {
+                    streamText += char
+                } else if let char = text[safe: count ..< text.count] {
+                    streamText += char
+                }
+                count += delta
+            }
+        }
+    }
+    
+    let text = #"""
 ---
 __Advertisement :)__
 
@@ -266,4 +287,43 @@ It converts "HTML", but keep intact partial entries like "xxxHTMLyyy" and so on.
 :::
 
 """#
+}
+
+extension String {
+    
+    /// SwifterSwift: Safely subscript string within a given range.
+    ///
+    ///        "Hello World!"[safe: 6..<11] -> "World"
+    ///        "Hello World!"[safe: 21..<110] -> nil
+    ///
+    /// - Parameter range: Range expression.
+    subscript(safe range: Range<Int>) -> String? {
+        guard range.lowerBound >= 0,
+              range.upperBound <= count else {
+            return nil
+        }
+
+        return String(self[range])
+    }
+}
+
+extension RangeReplaceableCollection {
+    
+    /// SwifterSwift: Accesses a contiguous subrange of the collection’s elements.
+    ///
+    /// - Parameter range: A range of the collection’s indices offsets. The bounds of the range must be valid indices of
+    /// the collection.
+    subscript<R>(range: R) -> SubSequence where R: RangeExpression, R.Bound == Int {
+        get {
+            let indexRange = range.relative(to: 0..<count)
+            return self[index(startIndex, offsetBy: indexRange.lowerBound)..<index(startIndex,
+                                                                                   offsetBy: indexRange.upperBound)]
+        }
+        set {
+            let indexRange = range.relative(to: 0..<count)
+            replaceSubrange(
+                index(startIndex, offsetBy: indexRange.lowerBound)..<index(startIndex, offsetBy: indexRange.upperBound),
+                with: newValue)
+        }
+    }
 }
