@@ -18,17 +18,17 @@ struct NetworkImage: View {
                     .frame(maxWidth: max(imageSize.width, imageSize.height))
                     .task { await cacheFetchedImage(image) }
             } else if let svg {
-                #if os(iOS) || os(macOS)
+#if os(iOS) || os(macOS)
                 SVGView(svg: svg)
                     .task { await cacheFetchedSVG(svg) }
-                #endif
+#endif
             } else if !isSupported {
                 ImagePlaceholder()
             } else {
                 ProgressView()
-                    #if os(macOS)
+#if os(macOS)
                     .controlSize(.small)
-                    #endif
+#endif
                     .frame(maxWidth: 50, alignment: .leading)
             }
             
@@ -56,9 +56,9 @@ struct NetworkImage: View {
                 } catch { }
             }
         }
-        #if os(iOS) || os(macOS)
+#if os(iOS) || os(macOS)
         .onTapGesture(perform: reloadImage)
-        #endif
+#endif
     }
     
     private func reloadImage() {
@@ -125,6 +125,7 @@ struct NetworkImage: View {
 // MARK: - Auxiliary
 
 extension NetworkImage {
+    
     private func loadResource() async throws -> Data {
         let (data, _) = try await URLSession.shared.data(from: url)
         return data
