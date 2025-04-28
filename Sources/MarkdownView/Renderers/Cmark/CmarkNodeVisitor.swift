@@ -11,9 +11,9 @@ import Markdown
 @MainActor
 @preconcurrency
 struct CmarkNodeVisitor: @preconcurrency MarkupVisitor {
-    var configuration: MarkdownRenderConfiguration
+    var configuration: MarkdownRendererConfiguration
     
-    init(configuration: MarkdownRenderConfiguration) {
+    init(configuration: MarkdownRendererConfiguration) {
         self.configuration = configuration
     }
     
@@ -53,7 +53,7 @@ struct CmarkNodeVisitor: @preconcurrency MarkupVisitor {
     }
     
     func visitText(_ text: Markdown.Text) -> MarkdownNodeView {
-        if configuration.mathRenderingConfiguration.enabled {
+        if configuration.math.shouldRender {
             InlineMathOrText(text: text.plainText)
                 .makeBody(configuration: configuration)
         } else {
@@ -157,7 +157,10 @@ struct CmarkNodeVisitor: @preconcurrency MarkupVisitor {
     
     func visitTableHead(_ head: Markdown.Table.Head) -> MarkdownNodeView {
         MarkdownNodeView {
-            MarkdownTableHead(head: head)
+            MarkdownTableRow(
+                rowIndex: 0,
+                cells: Array(head.cells)
+            )
         }
     }
     
@@ -169,7 +172,10 @@ struct CmarkNodeVisitor: @preconcurrency MarkupVisitor {
     
     func visitTableRow(_ row: Markdown.Table.Row) -> MarkdownNodeView {
         MarkdownNodeView {
-            MarkdownTableRow(row: row)
+            MarkdownTableRow(
+                rowIndex: row.indexInParent + 1 /* header */,
+                cells: Array(row.cells)
+            )
         }
     }
     
@@ -180,7 +186,10 @@ struct CmarkNodeVisitor: @preconcurrency MarkupVisitor {
             let cellView = renderer.visit(child)
             cellViews.append(cellView)
         }
-        return MarkdownNodeView(cellViews, alignment: cell.alignment)
+        return MarkdownNodeView(
+            cellViews,
+            alignment: cell.horizontalAlignment
+        )
     }
     
     func visitParagraph(_ paragraph: Paragraph) -> MarkdownNodeView {
@@ -188,16 +197,8 @@ struct CmarkNodeVisitor: @preconcurrency MarkupVisitor {
     }
     
     func visitHeading(_ heading: Heading) -> MarkdownNodeView {
-        var shouldAddAdditionalSpacing = true
-        if let parent = heading.parent,
-           (0..<parent.childCount).contains(heading.indexInParent - 1),
-           let previousHeading = parent.child(at: heading.indexInParent - 1),
-           previousHeading is Heading {
-            shouldAddAdditionalSpacing = false
-        }
-        
-        return MarkdownNodeView {
-            MarkdownHeading(heading: heading, shouldAddAdditionalSpacing: shouldAddAdditionalSpacing)
+        MarkdownNodeView {
+            MarkdownHeading(heading: heading)
         }
     }
     
@@ -232,17 +233,34 @@ struct CmarkNodeVisitor: @preconcurrency MarkupVisitor {
     }
     
     mutating func visitLink(_ link: Markdown.Link) -> MarkdownNodeView {
+        guard let destination = link.destination,
+              let url = URL(string: destination)
+        else { return descendInto(link) }
+        
         let nodeView = descendInto(link)
         switch nodeView.contentType {
         case .text:
             return MarkdownNodeView {
-                MarkdownLink(
-                    tint: configuration.inlineCodeTintColor,
-                    font: configuration.fontGroup.body
-                ).attributed(link)
+                nodeView.asText!
+                    .contentShape(.rect)
+                    #if os(macOS)
+                    .onTapGesture {
+                        NSWorkspace.shared.open(url)
+                    }
+                    #elseif !os(watchOS) && !os(tvOS)
+                    .onTapGesture {
+                        UIApplication.shared.open(url)
+                    }
+                    #endif
+                    .foregroundStyle(configuration.linkTintColor)
             }
         case .view:
-            return nodeView
+            return MarkdownNodeView {
+                Link(destination: url) {
+                    nodeView
+                }
+                .foregroundStyle(configuration.linkTintColor)
+            }
         }
     }
 }
